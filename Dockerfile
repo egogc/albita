@@ -13,14 +13,8 @@ COPY . .
 RUN pnpm build
 
 # Stage 2: serve
-FROM node:18-alpine AS runner
+FROM nginx:alpine
 
-WORKDIR /app
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-RUN npm install -g serve
-
-COPY --from=builder /app/dist ./dist
-
-EXPOSE 3000
-
-CMD ["serve", "-s", "dist", "-l", "tcp://0.0.0.0:3000"]
+EXPOSE 80
